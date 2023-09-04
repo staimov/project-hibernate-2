@@ -5,16 +5,19 @@ import lombok.*;
 
 @Entity
 @Table(name = "city", schema = "movie")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@Builder
-@ToString
-public class City {
+@ToString(callSuper = true)
+public class City extends UpdateDetails {
     @Id
     @Column(name = "city_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Short id;
+
+    @Column(name = "city", nullable = false)
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name="country_id", nullable = false)
+    private Country country;
 }

@@ -3,18 +3,19 @@ package org.staimov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "language", schema = "movie")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@Builder
-@ToString
-public class Language {
+@ToString(callSuper = true)
+public class Language extends UpdateDetails {
     @Id
     @Column(name = "language_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Byte id;
+
+    @Column(name = "name", columnDefinition = "char(20)", nullable = false)
+    private String name;
 }

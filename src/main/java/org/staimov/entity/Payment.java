@@ -5,16 +5,12 @@ import lombok.*;
 
 @Entity
 @Table(name = "payment", schema = "movie")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@Builder
-@ToString
-public class Payment {
+@ToString(callSuper = true)
+public class Payment extends UpdateDetails {
     @Id
     @Column(name = "payment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Short id;
 }

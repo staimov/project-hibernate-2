@@ -5,16 +5,12 @@ import lombok.*;
 
 @Entity
 @Table(name = "inventory", schema = "movie")
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
-@Builder
-@ToString
-public class Inventory {
+@ToString(callSuper = true)
+public class Inventory extends UpdateDetails {
     @Id
     @Column(name = "inventory_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Integer id;
 }
