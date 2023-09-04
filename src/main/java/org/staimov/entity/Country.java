@@ -3,8 +3,6 @@ package org.staimov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "country", schema = "movie")
 @Getter
