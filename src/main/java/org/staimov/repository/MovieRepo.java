@@ -32,6 +32,7 @@ public class MovieRepo {
                 .addAnnotatedClass(Country.class)
                 .addAnnotatedClass(Customer.class)
                 .addAnnotatedClass(Film.class)
+                .addAnnotatedClass(FilmText.class)
                 .addAnnotatedClass(Inventory.class)
                 .addAnnotatedClass(Language.class)
                 .addAnnotatedClass(Payment.class)
@@ -44,6 +45,12 @@ public class MovieRepo {
     public Film getFilm(short id) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(Film.class, id);
+        }
+    }
+
+    public FilmText getFilmText(short id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(FilmText.class, id);
         }
     }
 
