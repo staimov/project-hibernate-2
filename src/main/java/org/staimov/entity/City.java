@@ -12,7 +12,7 @@ public class City extends UpdateDetails {
     @Id
     @Column(name = "city_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Short id;
+    private short id;
 
     @Column(name = "city", nullable = false)
     private String name;

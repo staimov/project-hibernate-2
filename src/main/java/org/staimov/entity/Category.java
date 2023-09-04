@@ -12,7 +12,7 @@ public class Category extends UpdateDetails {
     @Id
     @Column(name = "category_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private byte id;
 
     @Column(name = "name", nullable = false)
     private String name;

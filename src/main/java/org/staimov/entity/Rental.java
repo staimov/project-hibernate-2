@@ -12,5 +12,5 @@ public class Rental extends UpdateDetails {
     @Id
     @Column(name = "rental_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 }

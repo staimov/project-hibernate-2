@@ -5,6 +5,7 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class UpdateDetails {
+public abstract class UpdateDetails {
     @Column(name = "last_update", nullable = false)
+    @UpdateTimestamp
     private LocalDateTime lastUpdate;
 }

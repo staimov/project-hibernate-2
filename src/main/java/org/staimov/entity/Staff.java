@@ -12,5 +12,7 @@ public class Staff extends UpdateDetails {
     @Id
     @Column(name = "staff_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private byte id;
+
+
 }

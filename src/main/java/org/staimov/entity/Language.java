@@ -12,8 +12,8 @@ public class Language extends UpdateDetails {
     @Id
     @Column(name = "language_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private byte id;
 
-    @Column(name = "name", columnDefinition = "char(20)", nullable = false)
+    @Column(name = "name", columnDefinition = "char", nullable = false)
     private String name;
 }

@@ -12,7 +12,7 @@ public class Address extends UpdateDetails {
     @Id
     @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Short id;
+    private short id;
 
     @Column(name = "address", nullable = false)
     private String address;

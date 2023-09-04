@@ -12,5 +12,5 @@ public class Store extends UpdateDetails {
     @Id
     @Column(name = "store_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Byte id;
+    private byte id;
 }

@@ -12,5 +12,5 @@ public class Payment extends UpdateDetails {
     @Id
     @Column(name = "payment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Short id;
+    private short id;
 }

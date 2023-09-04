@@ -12,7 +12,7 @@ public class Actor extends UpdateDetails {
     @Id
     @Column(name = "actor_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Short id;
+    private short id;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
