@@ -21,7 +21,6 @@ public class MovieRepo {
         properties.put(Environment.HBM2DDL_AUTO, DBConstants.DB_HBM2DDL_AUTO);
         properties.put(Environment.DRIVER, DBConstants.DB_DRIVER);
         properties.put(Environment.URL, DBConstants.DB_URL);
-        properties.put(Environment.DRIVER, DBConstants.DB_DRIVER);
         properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, DBConstants.CURRENT_SESSION_CONTEXT_CLASS);
 
         sessionFactory = new Configuration()
