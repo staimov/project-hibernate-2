@@ -10,6 +10,9 @@ public class Main {
         Film film = repo.getFilm((short) 1);
         System.out.println(film);
 
+        FilmText filmText = repo.getFilmText((short) 1);
+        System.out.println(filmText);
+
         Actor actor = repo.getActor((short) 1);
         System.out.println(actor);
     }
