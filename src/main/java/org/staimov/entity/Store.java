@@ -13,4 +13,12 @@ public class Store extends UpdateDetails {
     @Column(name = "store_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private byte id;
+
+    @OneToOne
+    @JoinColumn(name="address_id", nullable = false)
+    private Address address;
+
+    @OneToOne
+    @JoinColumn(name="manager_staff_id", nullable = false)
+    private Staff manager;
 }

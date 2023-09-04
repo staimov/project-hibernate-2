@@ -2,6 +2,7 @@ package org.staimov.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "staff", schema = "movie")
@@ -14,5 +15,34 @@ public class Staff extends UpdateDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private byte id;
 
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
 
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    @ManyToOne
+    @JoinColumn(name="address_id", nullable = false)
+    private Address address;
+
+    @Lob
+    @Column(name = "picture", columnDefinition = "blob")
+    private byte[] picture;
+
+    @Column(name = "email")
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name="store_id", nullable = false)
+    private Store store;
+
+    @Column(name = "active", nullable = false)
+    @Type(type="org.hibernate.type.BooleanType")
+    private boolean active;
+
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "password")
+    private String password;
 }

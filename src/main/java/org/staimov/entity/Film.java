@@ -47,10 +47,14 @@ public class Film extends UpdateDetails {
     @Column(name="replacement_cost",  nullable = false)
     private BigDecimal replacementCost;
 
+    // TODO: enums
+
 //    @Column(name = "rating")
 //    private String rating;
 
     @Column(name = "special_features",
             columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
+
+    // TODO: ManyToMany
 }
