@@ -3,6 +3,8 @@ package org.staimov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "category", schema = "movie")
 @Getter
@@ -16,4 +18,12 @@ public class Category extends UpdateDetails {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "film_category",
+            joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"))
+    @ToString.Exclude
+    private List<Film> films;
 }

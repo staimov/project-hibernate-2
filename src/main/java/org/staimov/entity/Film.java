@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "film", schema = "movie")
@@ -56,5 +57,19 @@ public class Film extends UpdateDetails {
             columnDefinition = "set('Trailers', 'Commentaries', 'Deleted Scenes', 'Behind the Scenes')")
     private String specialFeatures;
 
-    // TODO: ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "film_category",
+            joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"))
+    @ToString.Exclude
+    private List<Category> categories;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    @JoinTable(name = "film_actor",
+            joinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "actor_id", referencedColumnName = "actor_id"))
+    @ToString.Exclude
+    private List<Actor> actors;
 }
