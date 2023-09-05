@@ -7,15 +7,16 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.staimov.config.DBConstants;
 import org.staimov.dao.FilmDao;
+import org.staimov.dao.FilmDaoImpl;
 import org.staimov.entity.*;
 
 import java.util.Properties;
 
-public class Main {
+public class App {
     private final SessionFactory sessionFactory;
     private final FilmDao filmDao;
 
-    public Main() {
+    public App() {
         Properties properties = new Properties();
 
         properties.put(Environment.DIALECT, DBConstants.DB_DIALECT);
@@ -44,16 +45,21 @@ public class Main {
                 .addAnnotatedClass(Store.class)
                 .buildSessionFactory();
 
-        filmDao = new FilmDao(sessionFactory);
+        filmDao = new FilmDaoImpl(sessionFactory);
     }
 
     public static void main(String[] args) {
-        Main main = new Main();
+        new App().run();
+    }
 
-        try (Session session = main.sessionFactory.getCurrentSession()) {
+    public void run() {
+        try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
-            Film film = main.filmDao.findOne((short) 1);
+
+            Film film = filmDao.getOne((short) 10);
+
             System.out.println(film);
+
             transaction.commit();
         }
     }

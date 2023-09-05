@@ -1,6 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
+!**/src/app/**/target/
 !**/src/test/**/target/
 /lib
 
@@ -30,7 +30,7 @@ target/
 /nbdist/
 /.nb-gradle/
 build/
-!**/src/main/**/build/
+!**/src/app/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
