@@ -7,41 +7,47 @@ import org.hibernate.SessionFactory;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class AbstractDao<T, K extends Serializable> {
-    private final Class<T> clazz;
+public abstract class GenericDaoImpl<V, K extends Serializable> implements GenericDao<V, K> {
+    private final Class<V> clazz;
     private final SessionFactory sessionFactory;
 
-    public AbstractDao(final Class<T> clazzToSet, SessionFactory sessionFactory) {
-        this.clazz = Preconditions.checkNotNull(clazzToSet);
+    public GenericDaoImpl(final Class<V> clazzToSet, SessionFactory sessionFactory) {
+        this.clazz = clazzToSet;
         this.sessionFactory = Preconditions.checkNotNull(sessionFactory);
     }
 
-    public T findOne(final K id) {
-        return (T) getCurrentSession().get(clazz, id);
+    @Override
+    public V getOne(final K id) {
+        return (V) getCurrentSession().get(clazz, id);
     }
 
-    public List<T> findAll() {
+    @Override
+    public List<V> getAll() {
         return getCurrentSession().createQuery("from " + clazz.getName()).list();
     }
 
-    public T create(final T entity) {
+    @Override
+    public V save(final V entity) {
         Preconditions.checkNotNull(entity);
         getCurrentSession().saveOrUpdate(entity);
         return entity;
     }
 
-    public T update(final T entity) {
+    @Override
+    public V update(final V entity) {
         Preconditions.checkNotNull(entity);
-        return (T) getCurrentSession().merge(entity);
+        return (V) getCurrentSession().merge(entity);
     }
 
-    public void delete(final T entity) {
+    @Override
+    public void delete(final V entity) {
         Preconditions.checkNotNull(entity);
-        getCurrentSession().delete(entity);
+        getCurrentSession().remove(entity);
     }
 
-    public void deleteById(final K entityId) {
-        final T entity = findOne(entityId);
+    @Override
+    public void deleteById(final K id) {
+        final V entity = getOne(id);
         Preconditions.checkState(entity != null);
         delete(entity);
     }

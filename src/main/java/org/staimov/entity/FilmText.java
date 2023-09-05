@@ -23,7 +23,6 @@ public class FilmText {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description")
-    @Type(type="text")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 }
