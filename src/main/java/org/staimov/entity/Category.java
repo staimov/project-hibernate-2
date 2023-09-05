@@ -3,7 +3,7 @@ package org.staimov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "category", schema = "movie")
@@ -25,5 +25,5 @@ public class Category extends UpdateDetails {
             joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "film_id", referencedColumnName = "film_id"))
     @ToString.Exclude
-    private List<Film> films;
+    private Set<Film> films;
 }
