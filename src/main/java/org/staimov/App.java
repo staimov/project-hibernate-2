@@ -6,15 +6,19 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.staimov.config.DBConstants;
-import org.staimov.dao.FilmDao;
-import org.staimov.dao.FilmDaoImpl;
+import org.staimov.dao.*;
 import org.staimov.entity.*;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 
 public class App {
     private final SessionFactory sessionFactory;
     private final FilmDao filmDao;
+    private final CustomerDao customerDao;
+    private final AddressDao addressDao;
+    private final CityDao cityDao;
+    private final StoreDao storeDao;
 
     public App() {
         Properties properties = new Properties();
@@ -46,6 +50,10 @@ public class App {
                 .buildSessionFactory();
 
         filmDao = new FilmDaoImpl(sessionFactory);
+        customerDao = new CustomerDaoImpl(sessionFactory);
+        addressDao = new AddressDaoImpl(sessionFactory);
+        cityDao = new CityDaoImpl(sessionFactory);
+        storeDao = new StoreDaoImpl(sessionFactory);
     }
 
     public static void main(String[] args) {
@@ -53,12 +61,34 @@ public class App {
     }
 
     public void run() {
+        addCustomerExample();
+    }
+
+    public void addCustomerExample() {
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Film film = filmDao.getOne((short) 10);
+            Store store = storeDao.getPage(0, 1).get(0);
 
-            System.out.println(film);
+            City city = cityDao.getByName("London", "United Kingdom");
+
+            Address address = new Address();
+            address.setAddress("221B Baker Street");
+            address.setDistrict("Marylebone");
+            address.setPostalCode("NW1 6XE");
+            address.setPhone("+44-20-7224-3688");
+            address.setCity(city);
+
+            Customer customer = new Customer();
+            customer.setFirstName("SHERLOCK");
+            customer.setLastName("HOLMES");
+            customer.setEmail("info@sherlock-holmes.co.uk");
+            customer.setAddress(address);
+            customer.setActive(true);
+            customer.setStore(store);
+
+            addressDao.save(address);
+            customerDao.save(customer);
 
             transaction.commit();
         }
