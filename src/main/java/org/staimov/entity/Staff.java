@@ -27,6 +27,7 @@ public class Staff extends UpdateDetails {
 
     @Lob
     @Column(name = "picture", columnDefinition = "blob")
+    @ToString.Exclude
     private byte[] picture;
 
     @Column(name = "email")
@@ -34,6 +35,7 @@ public class Staff extends UpdateDetails {
 
     @ManyToOne
     @JoinColumn(name="store_id", nullable = false)
+    @ToString.Exclude
     private Store store;
 
     @Column(name = "active", nullable = false)

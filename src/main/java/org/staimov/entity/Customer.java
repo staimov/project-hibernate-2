@@ -2,6 +2,7 @@ package org.staimov.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
@@ -39,5 +40,6 @@ public class Customer extends UpdateDetails {
     private boolean active;
 
     @Column(name = "create_date", nullable = false)
+    @CreationTimestamp
     private LocalDateTime createDate;
 }
