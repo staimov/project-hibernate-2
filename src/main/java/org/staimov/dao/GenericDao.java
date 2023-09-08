@@ -8,6 +8,8 @@ public interface GenericDao<V, K extends Serializable> {
 
     List<V> getAll();
 
+    List<V> getPage(int offset, int count);
+
     V save(V entity);
 
     V update(V entity);

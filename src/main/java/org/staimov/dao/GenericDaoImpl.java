@@ -3,6 +3,7 @@ package org.staimov.dao;
 import com.google.common.base.Preconditions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,6 +25,14 @@ public abstract class GenericDaoImpl<V, K extends Serializable> implements Gener
     @Override
     public List<V> getAll() {
         return getCurrentSession().createQuery("from " + clazz.getName()).list();
+    }
+
+    @Override
+    public List<V> getPage(int offset, int count) {
+        Query query = getCurrentSession().createQuery("from " + clazz.getName(), clazz);
+        query.setFirstResult(offset);
+        query.setMaxResults(count);
+        return query.list();
     }
 
     @Override
