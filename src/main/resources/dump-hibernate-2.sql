@@ -4,8 +4,9 @@
 -- ------------------------------------------------------
 -- Server version	8.0.30
 
-create schema movie;
-use movie;
+DROP DATABASE IF EXISTS movie;
+CREATE SCHEMA movie;
+USE movie;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
