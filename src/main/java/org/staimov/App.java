@@ -11,8 +11,12 @@ import org.staimov.entity.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+
+import static org.staimov.entity.SpecialFeature.TRAILERS;
 
 public class App {
     private final SessionFactory sessionFactory;
@@ -24,6 +28,10 @@ public class App {
     private final RentalDao rentalDao;
     private final PaymentDao paymentDao;
     private final InventoryDao inventoryDao;
+    private final ActorDao actorDao;
+    private final CategoryDao categoryDao;
+    private final LanguageDao languageDao;
+    private final FilmTextDao filmTextDao;
 
     public App() {
         Properties properties = new Properties();
@@ -62,6 +70,10 @@ public class App {
         rentalDao = new RentalDaoImpl(sessionFactory);
         paymentDao = new PaymentDaoImpl(sessionFactory);
         inventoryDao = new InventoryDaoImpl(sessionFactory);
+        actorDao = new ActorDaoImpl(sessionFactory);
+        categoryDao = new CategoryDaoImpl(sessionFactory);
+        languageDao = new LanguageDaoImpl(sessionFactory);
+        filmTextDao = new FilmTextDaoImpl(sessionFactory);
     }
 
     public static void main(String[] args) {
@@ -69,9 +81,14 @@ public class App {
     }
 
     public void run() {
-        //addCustomerExample();
-        //returnRentedInventoryExample();
-        rentInventoryItemExample();
+        try {
+            addCustomerExample();
+            returnRentedInventoryExample();
+            rentInventoryItemExample();
+            addFilmExample();
+        } finally {
+            sessionFactory.close();
+        }
     }
 
     public void addCustomerExample() {
@@ -85,6 +102,8 @@ public class App {
                 return;
             }
 
+            System.out.println(store);
+
             City city = cityDao.getByName("London", "United Kingdom");
             if (city == null) {
                 System.out.println("City not found");
@@ -92,27 +111,27 @@ public class App {
                 return;
             }
 
-            Address address = new Address();
-            address.setAddress("221B Baker Street");
-            address.setDistrict("Marylebone");
-            address.setPostalCode("NW1 6XE");
-            address.setPhone("+44-20-7224-3688");
-            address.setCity(city);
+            Address newAddress = new Address();
+            newAddress.setAddress("221B Baker Street");
+            newAddress.setDistrict("Marylebone");
+            newAddress.setPostalCode("NW1 6XE");
+            newAddress.setPhone("+44-20-7224-3688");
+            newAddress.setCity(city);
 
-            Customer customer = new Customer();
-            customer.setFirstName("SHERLOCK");
-            customer.setLastName("HOLMES");
-            customer.setEmail("info@sherlock-holmes.co.uk");
-            customer.setAddress(address);
-            customer.setActive(true);
-            customer.setStore(store);
+            Customer newCustomer = new Customer();
+            newCustomer.setFirstName("SHERLOCK");
+            newCustomer.setLastName("HOLMES");
+            newCustomer.setEmail("info@sherlock-holmes.co.uk");
+            newCustomer.setAddress(newAddress);
+            newCustomer.setActive(true);
+            newCustomer.setStore(store);
 
-            addressDao.save(address);
-            customerDao.save(customer);
+            addressDao.save(newAddress);
+            customerDao.save(newCustomer);
 
             transaction.commit();
 
-            System.out.println(customer);
+            System.out.println(newCustomer);
         }
     }
 
@@ -120,15 +139,15 @@ public class App {
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Rental rental = rentalDao.getAnyUnreturned();
-            if (rental != null) {
-                System.out.println(rental);
-                rental.setReturnDate(LocalDateTime.now());
-                rentalDao.save(rental);
+            Rental rentalToUpdate = rentalDao.getAnyUnreturned();
+            if (rentalToUpdate != null) {
+                System.out.println(rentalToUpdate);
+                rentalToUpdate.setReturnDate(LocalDateTime.now());
+                rentalDao.save(rentalToUpdate);
 
                 transaction.commit();
 
-                System.out.println(rental);
+                System.out.println(rentalToUpdate);
             }
             else {
                 System.out.println("Rental not found");
@@ -190,6 +209,80 @@ public class App {
 
             System.out.println(newRental);
             System.out.println(newPayment);
+        }
+    }
+
+    public void addFilmExample() {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            List<Actor> actors = actorDao.getPage(0, 5);
+            if (actors.isEmpty()) {
+                System.out.println("Actors not found");
+                transaction.rollback();
+                return;
+            }
+
+            List<Category> categories = categoryDao.getPage(0, 2);
+            if (actors.isEmpty()) {
+                System.out.println("Categories not found");
+                transaction.rollback();
+                return;
+            }
+
+            Language language = languageDao.getAny();
+            if (language == null) {
+                System.out.println("Language not found");
+                transaction.rollback();
+                return;
+            }
+
+            Store store = storeDao.getAny();
+            if (store == null) {
+                System.out.println("Store not found");
+                transaction.rollback();
+                return;
+            }
+
+            // Добавим фильм
+            Film newFilm = new Film();
+            newFilm.setActors(new HashSet<>(actors));
+            newFilm.setCategories(new HashSet<>(categories));
+            newFilm.setOriginalLanguage(language);
+            newFilm.setLanguage(language);
+            newFilm.setRating(Rating.PG_13);
+            newFilm.setReleaseYear(2025);
+            newFilm.setSpecialFeatures(Set.of(SpecialFeature.TRAILERS, SpecialFeature.DELETED_SCENES));
+            newFilm.setLength((byte) 5);
+            newFilm.setReplacementCost(BigDecimal.valueOf(18.99));
+            newFilm.setRentalRate(BigDecimal.valueOf(5.99));
+            newFilm.setRentalDuration((byte) 7);
+            newFilm.setLength((short) 245);
+            newFilm.setTitle("Titanic 2");
+            newFilm.setDescription("Sometimes They Come Back");
+
+            // Добавим в инвентарь новый элемент, соответствующий новому фильму,
+            // чтобы его можно было отдавать в прокат
+            Inventory newInventory = new Inventory();
+            newInventory.setFilm(newFilm);
+            newInventory.setStore(store);
+
+            filmDao.save(newFilm);
+            inventoryDao.save(newInventory);
+
+            // Добавим текст фильма
+            FilmText newFilmText = new FilmText();
+            newFilmText.setFilm(newFilm);
+            newFilmText.setTitle(newFilm.getTitle());
+            newFilmText.setDescription(newFilm.getDescription());
+
+            filmTextDao.save(newFilmText);
+
+            transaction.commit();
+
+            System.out.println(newFilm);
+            System.out.println(newFilmText);
+            System.out.println(newInventory);
         }
     }
 }
