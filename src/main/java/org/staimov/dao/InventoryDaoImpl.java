@@ -13,8 +13,13 @@ public class InventoryDaoImpl extends GenericDaoImpl<Inventory, Integer> impleme
 
     @Override
     public List<Inventory> getAvailableInventoryItemsForRent() {
+
+        // Здесь нам надо получить элементы из инвентаря, которые ни разу не отдавали на прокат,
+        // или выдавали на прокат, но в данный момент вернули
+        // (т.е. количество событий выдачи равно количеству событий возврата)
+
         String sql = """
-                /* запрос 1: записи из инвентаря, которые отдавали на прокат, но в данный момент вернули */
+                /* запрос 1: элементы из инвентаря, которые отдавали на прокат, но в данный момент вернули */
                 with returned_items as (
                     select r.inventory_id from rental r
                     group by r.inventory_id
@@ -22,7 +27,7 @@ public class InventoryDaoImpl extends GenericDaoImpl<Inventory, Integer> impleme
                 select i.* from inventory i
                     right join returned_items ri on ri.inventory_id = i.inventory_id
                 union
-                /* запрос 2: записи из инвентаря, которые ни разу не отдавали на прокат */
+                /* запрос 2: элементы из инвентаря, которые ни разу не отдавали на прокат */
                 select i.* from inventory i
                     where i.inventory_id not in (select distinct r.inventory_id from rental r)
                 order by inventory_id;
