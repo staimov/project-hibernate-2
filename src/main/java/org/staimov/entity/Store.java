@@ -3,6 +3,8 @@ package org.staimov.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "store", schema = "movie")
 @Getter
@@ -17,6 +19,11 @@ public class Store extends UpdateDetails {
     @OneToOne
     @JoinColumn(name="address_id", nullable = false)
     private Address address;
+
+    @OneToMany(mappedBy = "store",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private Set<Staff> staff;
 
     @OneToOne
     @JoinColumn(name="manager_staff_id", nullable = false)
