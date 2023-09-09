@@ -1,6 +1,7 @@
 package org.staimov.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,6 +19,7 @@ public class FilmText {
 
     @OneToOne
     @JoinColumn(name = "film_id")
+    @Setter(AccessLevel.NONE)
     private Film film;
 
     @Column(name = "title", nullable = false)
@@ -25,4 +27,9 @@ public class FilmText {
 
     @Column(name = "description", columnDefinition = "text")
     private String description;
+
+    public void setFilm(Film film) {
+        this.film = film;
+        this.id = film.getId();
+    }
 }

@@ -94,7 +94,7 @@ public class Film extends UpdateDetails {
         return result;
     }
 
-    public void setSpecialFeatures(List<SpecialFeature> features) {
+    public void setSpecialFeatures(Set<SpecialFeature> features) {
         if (features == null) {
             specialFeatures = null;
         } else {
