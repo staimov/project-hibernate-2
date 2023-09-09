@@ -19,6 +19,7 @@ public class App {
     private final AddressDao addressDao;
     private final CityDao cityDao;
     private final StoreDao storeDao;
+    private final RentalDao rentalDao;
 
     public App() {
         Properties properties = new Properties();
@@ -54,6 +55,7 @@ public class App {
         addressDao = new AddressDaoImpl(sessionFactory);
         cityDao = new CityDaoImpl(sessionFactory);
         storeDao = new StoreDaoImpl(sessionFactory);
+        rentalDao = new RentalDaoImpl(sessionFactory);
     }
 
     public static void main(String[] args) {
@@ -61,36 +63,66 @@ public class App {
     }
 
     public void run() {
-        addCustomerExample();
+        //addCustomerExample();
+        returnRentedFilmExample();
     }
 
     public void addCustomerExample() {
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
 
-            Store store = storeDao.getPage(0, 1).get(0);
+            Store store = storeDao.getAny();
 
             City city = cityDao.getByName("London", "United Kingdom");
 
-            Address address = new Address();
-            address.setAddress("221B Baker Street");
-            address.setDistrict("Marylebone");
-            address.setPostalCode("NW1 6XE");
-            address.setPhone("+44-20-7224-3688");
-            address.setCity(city);
+            if (store != null && city != null) {
+                Address address = new Address();
+                address.setAddress("221B Baker Street");
+                address.setDistrict("Marylebone");
+                address.setPostalCode("NW1 6XE");
+                address.setPhone("+44-20-7224-3688");
+                address.setCity(city);
 
-            Customer customer = new Customer();
-            customer.setFirstName("SHERLOCK");
-            customer.setLastName("HOLMES");
-            customer.setEmail("info@sherlock-holmes.co.uk");
-            customer.setAddress(address);
-            customer.setActive(true);
-            customer.setStore(store);
+                Customer customer = new Customer();
+                customer.setFirstName("SHERLOCK");
+                customer.setLastName("HOLMES");
+                customer.setEmail("info@sherlock-holmes.co.uk");
+                customer.setAddress(address);
+                customer.setActive(true);
+                customer.setStore(store);
 
-            addressDao.save(address);
-            customerDao.save(customer);
+                addressDao.save(address);
+                customerDao.save(customer);
 
-            transaction.commit();
+                transaction.commit();
+
+                System.out.println(customer);
+            }
+            else {
+                System.out.println("Store or City not found");
+                transaction.rollback();
+            }
+        }
+    }
+
+    public void returnRentedFilmExample() {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            Rental rental = rentalDao.getAnyUnreturned();
+            if (rental != null) {
+                System.out.println(rental);
+                rental.setReturnDate(LocalDateTime.now());
+                rentalDao.save(rental);
+
+                transaction.commit();
+
+                System.out.println(rental);
+            }
+            else {
+                System.out.println("Rental not found");
+                transaction.rollback();
+            }
         }
     }
 }

@@ -27,6 +27,10 @@ public abstract class GenericDaoImpl<V, K extends Serializable> implements Gener
         return getCurrentSession().createQuery("from " + clazz.getName()).list();
     }
 
+    public V getAny() {
+        return (V) getPage(0, 1).get(0);
+    }
+
     @Override
     public List<V> getPage(int offset, int count) {
         Query query = getCurrentSession().createQuery("from " + clazz.getName(), clazz);
