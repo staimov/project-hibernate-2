@@ -9,7 +9,9 @@ import org.staimov.config.DBConstants;
 import org.staimov.dao.*;
 import org.staimov.entity.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 
 public class App {
@@ -20,6 +22,8 @@ public class App {
     private final CityDao cityDao;
     private final StoreDao storeDao;
     private final RentalDao rentalDao;
+    private final PaymentDao paymentDao;
+    private final InventoryDao inventoryDao;
 
     public App() {
         Properties properties = new Properties();
@@ -56,6 +60,8 @@ public class App {
         cityDao = new CityDaoImpl(sessionFactory);
         storeDao = new StoreDaoImpl(sessionFactory);
         rentalDao = new RentalDaoImpl(sessionFactory);
+        paymentDao = new PaymentDaoImpl(sessionFactory);
+        inventoryDao = new InventoryDaoImpl(sessionFactory);
     }
 
     public static void main(String[] args) {
@@ -64,7 +70,8 @@ public class App {
 
     public void run() {
         //addCustomerExample();
-        returnRentedFilmExample();
+        //returnRentedInventoryExample();
+        rentInventoryItemExample();
     }
 
     public void addCustomerExample() {
@@ -72,40 +79,44 @@ public class App {
             Transaction transaction = session.beginTransaction();
 
             Store store = storeDao.getAny();
+            if (store == null) {
+                System.out.println("Store not found");
+                transaction.rollback();
+                return;
+            }
 
             City city = cityDao.getByName("London", "United Kingdom");
-
-            if (store != null && city != null) {
-                Address address = new Address();
-                address.setAddress("221B Baker Street");
-                address.setDistrict("Marylebone");
-                address.setPostalCode("NW1 6XE");
-                address.setPhone("+44-20-7224-3688");
-                address.setCity(city);
-
-                Customer customer = new Customer();
-                customer.setFirstName("SHERLOCK");
-                customer.setLastName("HOLMES");
-                customer.setEmail("info@sherlock-holmes.co.uk");
-                customer.setAddress(address);
-                customer.setActive(true);
-                customer.setStore(store);
-
-                addressDao.save(address);
-                customerDao.save(customer);
-
-                transaction.commit();
-
-                System.out.println(customer);
-            }
-            else {
-                System.out.println("Store or City not found");
+            if (city == null) {
+                System.out.println("City not found");
                 transaction.rollback();
+                return;
             }
+
+            Address address = new Address();
+            address.setAddress("221B Baker Street");
+            address.setDistrict("Marylebone");
+            address.setPostalCode("NW1 6XE");
+            address.setPhone("+44-20-7224-3688");
+            address.setCity(city);
+
+            Customer customer = new Customer();
+            customer.setFirstName("SHERLOCK");
+            customer.setLastName("HOLMES");
+            customer.setEmail("info@sherlock-holmes.co.uk");
+            customer.setAddress(address);
+            customer.setActive(true);
+            customer.setStore(store);
+
+            addressDao.save(address);
+            customerDao.save(customer);
+
+            transaction.commit();
+
+            System.out.println(customer);
         }
     }
 
-    public void returnRentedFilmExample() {
+    public void returnRentedInventoryExample() {
         try (Session session = sessionFactory.getCurrentSession()) {
             Transaction transaction = session.beginTransaction();
 
@@ -123,6 +134,62 @@ public class App {
                 System.out.println("Rental not found");
                 transaction.rollback();
             }
+        }
+    }
+
+    public void rentInventoryItemExample() {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            Transaction transaction = session.beginTransaction();
+
+            List<Inventory> availableItems = inventoryDao.getAvailableInventoryItemsForRent();
+            if (availableItems.isEmpty()) {
+                System.out.println("Available Inventory for rent not found");
+                transaction.rollback();
+                return;
+            }
+
+            Inventory firstAvailableItem = availableItems.get(0);
+
+            System.out.println(firstAvailableItem);
+
+            Staff staff;
+            if (!firstAvailableItem.getStore().getStaff().isEmpty()) {
+                staff = firstAvailableItem.getStore().getStaff().iterator().next();
+            }
+            else {
+                staff = firstAvailableItem.getStore().getManager();
+            }
+
+            Customer customer;
+            customer = customerDao.getAny();
+            if (customer == null) {
+                System.out.println("Customer not found");
+                transaction.rollback();
+                return;
+            }
+
+            Rental newRental = new Rental();
+            newRental.setInventory(firstAvailableItem);
+            newRental.setStaff(staff);
+            newRental.setCustomer(customer);
+            newRental.setRentalDate(LocalDateTime.now());
+
+            Payment newPayment = new Payment();
+            newPayment.setCustomer(customer);
+            newPayment.setStaff(staff);
+            newPayment.setRental(newRental);
+            newPayment.setPaymentDate(LocalDateTime.now());
+            BigDecimal renalRate = firstAvailableItem.getFilm().getRentalRate();
+            BigDecimal rentalDuration = BigDecimal.valueOf(firstAvailableItem.getFilm().getRentalDuration());
+            newPayment.setAmount(renalRate.multiply(rentalDuration));
+
+            rentalDao.save(newRental);
+            paymentDao.save(newPayment);
+
+            transaction.commit();
+
+            System.out.println(newRental);
+            System.out.println(newPayment);
         }
     }
 }
