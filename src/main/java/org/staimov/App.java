@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static org.staimov.entity.SpecialFeature.TRAILERS;
 
 public class App {
@@ -87,6 +88,12 @@ public class App {
             rentInventoryItemExample();
             addFilmExample();
         } finally {
+            shutdown();
+        }
+    }
+
+    private void shutdown() {
+        if (nonNull(sessionFactory)) {
             sessionFactory.close();
         }
     }
