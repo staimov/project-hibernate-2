@@ -58,13 +58,6 @@ public abstract class GenericDaoImpl<V, K extends Serializable> implements Gener
         getCurrentSession().remove(entity);
     }
 
-    @Override
-    public void deleteById(final K id) {
-        final V entity = getOne(id);
-        Preconditions.checkState(entity != null);
-        delete(entity);
-    }
-
     protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
