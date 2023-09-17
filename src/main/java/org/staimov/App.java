@@ -17,7 +17,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
-import static org.staimov.entity.SpecialFeature.TRAILERS;
 
 public class App {
     private final SessionFactory sessionFactory;
