@@ -4,6 +4,15 @@
 
 https://javarush.com/quests/lectures/jru.module4.lecture07
 
+### Запуск приложения
+
+1. Перестроить проект:
+```
+mvn clean install
+```
+2. Применить SQL-скрипт [dump-hibernate-2.sql](./dump-hibernate-2.sql) к MySQL. 
+3. Запустить приложение.
+
 ### Предложения по улучшению структуры БД
 
 1. Поле rental_id таблицы payment можно сделать not null, иначе появляются платежи, назначение которых не определенное.
