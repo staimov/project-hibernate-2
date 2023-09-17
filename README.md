@@ -12,6 +12,9 @@ mvn clean install
 ```
 2. Применить SQL-скрипт [dump-hibernate-2.sql](./dump-hibernate-2.sql) к MySQL. 
 3. Запустить приложение.
+```
+java -jar target/project-hibernate-2-1.0.jar
+```
 
 ### Предложения по улучшению структуры БД
 
