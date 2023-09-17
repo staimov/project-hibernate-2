@@ -11,7 +11,7 @@ https://javarush.com/quests/lectures/jru.module4.lecture07
 mvn clean install
 ```
 2. Применить SQL-скрипт [dump-hibernate-2.sql](./dump-hibernate-2.sql) к MySQL. 
-3. Запустить приложение.
+3. Запустить приложение:
 ```
 java -jar target/project-hibernate-2-1.0.jar
 ```
