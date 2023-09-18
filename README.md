@@ -1,3 +1,4 @@
+[![My Skills](https://skillicons.dev/icons?i=java,hibernate,mysql&theme=light)](https://skillicons.dev)
 # project-hibernate-2
 
 Проект JavaRush hibernate #2:
