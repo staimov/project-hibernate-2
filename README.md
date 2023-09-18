@@ -16,4 +16,4 @@ mvn clean install
 java -jar target/project-hibernate-2-1.0.jar
 ```
 
-[Предложения по улучшению структуры БД](./db_suggest.md)
+### [Предложения по улучшению структуры БД](./db_suggest.md)
